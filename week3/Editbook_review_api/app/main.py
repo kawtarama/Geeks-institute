@@ -6,7 +6,7 @@ from .database import engine
 from .routers import auth, books, reviews, users
 # Décommentez si vous souhaitez utiliser le middleware personnalisé
 # from .middleware import AuthMiddleware  
-from middleware import AuthMiddleware
+from app.middleware import AuthMiddleware
 # Création des tables dans la base de données
 models.Base.metadata.create_all(bind=engine)
 
