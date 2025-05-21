@@ -9,7 +9,7 @@ secondUl.removeChild(secondUl.children[1]);
 
 const lists = document.querySelectorAll('.list');
 lists.forEach(list => {
-    list.children[0].textContent = 'Alex'; // Replace 'Alex' with your name
+    list.children[0].textContent = 'Alex'; 
 });
 
 
