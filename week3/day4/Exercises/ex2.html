@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exercise 2 - Form</title>
+</head>
+<body>
+
+  <form id="nameForm">
+    <label for="fname">First name:</label>
+    <input type="text" id="fname" name="firstname" />
+    <label for="lname">Last name:</label>
+    <input type="text" id="lname" name="lastname" />
+    <input type="submit" value="Submit" />
+  </form>
+
+  <ul class="usersAnswer"></ul>
+
+  <script>
+    const form = document.getElementById('nameForm');
+    const ul = document.querySelector('.usersAnswer');
+
+    // Afficher le formulaire dans la console
+    console.log(form);
+
+    // Afficher inputs par id
+    console.log(document.getElementById('fname'));
+    console.log(document.getElementById('lname'));
+
+    // Afficher inputs par name
+    console.log(document.querySelector('input[name="firstname"]'));
+    console.log(document.querySelector('input[name="lastname"]'));
+
+    form.addEventListener('submit', e => {
+      e.preventDefault(); // Empêche le rechargement
+
+      const fname = document.getElementById('fname').value.trim();
+      const lname = document.getElementById('lname').value.trim();
+
+      if (fname && lname) {
+        ul.innerHTML = ''; // vide la liste
+        const li1 = document.createElement('li');
+        li1.textContent = fname;
+        const li2 = document.createElement('li');
+        li2.textContent = lname;
+        ul.appendChild(li1);
+        ul.appendChild(li2);
+      } else {
+        alert('Please fill in both fields.');
+      }
+    });
+  </script>
+</body>
+</html>

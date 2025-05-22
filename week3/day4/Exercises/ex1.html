@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exercise 1</title>
+  <style>
+    p.fade-out {
+      transition: opacity 0.5s;
+    }
+  </style>
+</head>
+<body>
+  <article>
+    <h1>Some Facts</h1>
+    <h2>The Chocolate</h2>
+    <h3>History of the chocolate</h3>
+    <p>Chocolate is made from tropical Theobroma cacao tree seeds...</p>
+    <p>After the European discovery of the Americas...</p>
+    <p>Chocolate has since become a popular food product...</p>
+    <p>But what effect does eating chocolate have on our health?</p>
+  </article>
+  <button id="boldBtn">Make Paragraphs Bold</button>
+
+  <script>
+    const h1 = document.querySelector('h1');
+    console.log(h1);
+
+    const paragraphs = document.querySelectorAll('article p');
+    paragraphs[paragraphs.length - 1].remove();
+
+    const h2 = document.querySelector('h2');
+    h2.addEventListener('click', function () {
+      this.style.backgroundColor = 'red';
+    });
+
+    const h3 = document.querySelector('h3');
+    h3.addEventListener('click', function () {
+      this.style.display = 'none';
+    });
+
+    document.getElementById('boldBtn').addEventListener('click', function () {
+      document.querySelectorAll('article p').forEach(p => {
+        p.style.fontWeight = 'bold';
+      });
+    });
+
+    h1.addEventListener('mouseover', function () {
+      this.style.fontSize = `${Math.floor(Math.random() * 100)}px`;
+    });
+
+    const secondP = paragraphs[1];
+    secondP.classList.add("fade-out");
+    secondP.addEventListener('mouseover', () => secondP.style.opacity = "0");
+    secondP.addEventListener('mouseout', () => secondP.style.opacity = "1");
+  </script>
+</body>
+</html>
