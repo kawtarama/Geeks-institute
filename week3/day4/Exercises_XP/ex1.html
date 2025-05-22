@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exercise 1 - Timer</title>
+  <style>
+    p {
+      background: yellow;
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="container"></div>
+  <button id="clear">Clear Interval</button>
+
+<script>
+  // Part I - setTimeout to alert after 2 seconds
+  setTimeout(() => {
+    alert("Hello World");
+  }, 2000);
+
+  // Part II - setTimeout to add a <p> after 2 seconds
+  setTimeout(() => {
+    const container = document.getElementById('container');
+    const p = document.createElement('p');
+    p.textContent = "Hello World";
+    container.appendChild(p);
+  }, 2000);
+
+  // Part III - setInterval to add <p> every 2 seconds
+  const container = document.getElementById('container');
+  const clearBtn = document.getElementById('clear');
+
+  const intervalId = setInterval(() => {
+    const p = document.createElement('p');
+    p.textContent = "Hello World";
+    container.appendChild(p);
+
+    if (container.querySelectorAll('p').length >= 5) {
+      clearInterval(intervalId);
+    }
+  }, 2000);
+
+  // Clear interval on button click
+  clearBtn.addEventListener('click', () => {
+    clearInterval(intervalId);
+  });
+</script>
+
+</body>
+</html>

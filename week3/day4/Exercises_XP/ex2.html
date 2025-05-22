@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exercise 2 - Move the box</title>
+  <style>
+    #container {
+      width: 400px;
+      height: 400px;
+      position: relative;
+      background: yellow;
+    }
+    #animate {
+      width: 50px;
+      height: 50px;
+      position: absolute;
+      background-color: red;
+      left: 0;
+      top: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <p><button onclick="myMove()">Click Me</button></p>
+  <div id="container">
+    <div id="animate"></div>
+  </div>
+
+<script>
+  function myMove() {
+    const box = document.getElementById("animate");
+    const container = document.getElementById("container");
+    let pos = 0; // position en pixels depuis la gauche
+    
+    // Largeur max pour le déplacement (container - box)
+    const maxPos = container.clientWidth - box.clientWidth;
+
+    // On évite plusieurs intervalles si on clique plusieurs fois
+    if (box.moveInterval) {
+      clearInterval(box.moveInterval);
+    }
+
+    box.moveInterval = setInterval(() => {
+      if (pos >= maxPos) {
+        clearInterval(box.moveInterval);
+      } else {
+        pos++;
+        box.style.left = pos + "px";
+      }
+    }, 1);
+  }
+</script>
+
+</body>
+</html>
