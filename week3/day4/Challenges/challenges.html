@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mad Libs Challenge</title>
+  <style>
+    label, input, button {
+      display: block;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Mad Libs</h1>
+
+  <form id="libform">
+    <label for="noun">Noun:</label>
+    <input type="text" id="noun" />
+    
+    <label for="adjective">Adjective:</label>
+    <input type="text" id="adjective" />
+    
+    <label for="person">Someone's Name:</label>
+    <input type="text" id="person" />
+    
+    <label for="verb">Verb:</label>
+    <input type="text" id="verb" />
+    
+    <label for="place">A place:</label>
+    <input type="text" id="place" />
+    
+    <button type="submit" id="lib-button">Lib it!</button>
+  </form>
+
+  <button id="shuffle-button" style="margin-top: 15px;">Shuffle Story</button>
+
+  <p>Generated story: <span id="story"></span></p>
+
+<script>
+  const form = document.getElementById('libform');
+  const storySpan = document.getElementById('story');
+  const shuffleBtn = document.getElementById('shuffle-button');
+
+  // Tableau de différentes histoires, avec des placeholders
+  const stories = [
+    (noun, adj, person, verb, place) => 
+      `${person} went to the ${place} to ${verb} a ${adj} ${noun}. It was unforgettable!`,
+    
+    (noun, adj, person, verb, place) => 
+      `In the ${place}, a ${adj} ${noun} made ${person} ${verb} all day long.`,
+    
+    (noun, adj, person, verb, place) => 
+      `${person} couldn't believe how ${adj} the ${noun} was while they tried to ${verb} at the ${place}.`
+  ];
+
+  let currentStoryIndex = 0;
+
+  // Fonction pour récupérer les valeurs et vérifier qu'elles ne sont pas vides
+  function getInputValues() {
+    const noun = document.getElementById('noun').value.trim();
+    const adjective = document.getElementById('adjective').value.trim();
+    const person = document.getElementById('person').value.trim();
+    const verb = document.getElementById('verb').value.trim();
+    const place = document.getElementById('place').value.trim();
+
+    if (!noun || !adjective || !person || !verb || !place) {
+      alert('Please fill in all fields!');
+      return null;
+    }
+
+    return { noun, adjective, person, verb, place };
+  }
+
+  // Affiche une histoire selon l'index donné
+  function displayStory(index, values) {
+    const storyFunc = stories[index];
+    storySpan.textContent = storyFunc(values.noun, values.adjective, values.person, values.verb, values.place);
+  }
+
+  // Soumission du formulaire
+  form.addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const values = getInputValues();
+    if (!values) return;
+
+    currentStoryIndex = 0;
+    displayStory(currentStoryIndex, values);
+  });
+
+  // Shuffle : change l'histoire affichée en suivant l'index suivant (cyclique)
+  shuffleBtn.addEventListener('click', function() {
+    const values = getInputValues();
+    if (!values) return;
+
+    // Passe à l'histoire suivante
+    currentStoryIndex = (currentStoryIndex + 1) % stories.length;
+    displayStory(currentStoryIndex, values);
+  });
+
+</script>
+
+</body>
+</html>
