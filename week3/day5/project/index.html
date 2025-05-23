@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coloring Squares</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            display: flex;
+            /* gap: 20px; */
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .color-panel {
+            width: 250px;
+            background: #e9e3e3;
+            border: 3px solid #333;
+            /* border-radius: 8px; */
+            padding: 15px;
+        }
+
+        .clear-btn {
+            width: 100%;
+            padding: 12px;
+            background: #e0e0e0;
+            border: 2px solid #333;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 15px;
+            transition: background-color 0.2s;
+        }
+
+        .clear-btn:hover {
+            background: #d0d0d0;
+        }
+
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+        }
+
+        .color-square {
+            width: 60px;
+            height: 60px;
+            border: 3px solid #333;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .color-square:hover {
+            transform: scale(1.05);
+        }
+
+        .color-square.selected {
+            border: 4px solid #000;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .canvas-area {
+            flex: 1;
+            background:#e9e3e3;
+            border: 3px solid #333;
+            /* border-radius: 8px; */
+            padding: 20px;
+            
+        }
+
+        .drawing-grid {
+            display: grid;
+            grid-template-columns: repeat(40, 1fr);
+            gap: 2px;
+            background: #ccc;
+            border: 1px solid #ccc;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .pixel {
+            width: 15px;
+            height: 15px;
+            background: white;
+            cursor: crosshair;
+            transition: background-color 0.1s;
+        }
+
+        .pixel:hover {
+            opacity: 0.8;
+        }
+
+        .instructions {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #fff;
+            border: 2px solid #333;
+            border-radius: 8px;
+        }
+
+        .instructions h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+
+        .instructions ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        /* Color definitions */
+        .red { background-color: #ff0000; }
+        .orange { background-color: #ff8000; }
+        .yellow-orange { background-color: #ffb000; }
+        .yellow { background-color: #ffff00; }
+        .lime { background-color: #80ff00; }
+        .light-green { background-color: #00ff80; }
+        .green { background-color: #008000; }
+        .cyan { background-color: #00ffff; }
+        .light-blue { background-color: #0080ff; }
+        .sky-blue { background-color: #87ceeb; }
+        .blue { background-color: #0000ff; }
+        .dark-blue { background-color: #000080; }
+        .navy { background-color: #1e1e3f; }
+        .purple { background-color: #800080; }
+        .magenta { background-color: #ff00ff; }
+        .pink { background-color: #ffb6c1; }
+        .light-pink { background-color: #ffc0cb; }
+        .gray { background-color: #808080; }
+        .dark-gray { background-color: #404040; }
+        .black { background-color: #000000; }
+        .white { background-color: #ffffff; }
+    </style>
+</head>
+<body>
+   
+
+    <div class="container">
+        <div class="color-panel">
+            <button class="clear-btn" id="clearBtn">Clear</button>
+            <div class="color-grid" id="colorGrid">
+                <div class="color-square red" data-color="#ff0000"></div>
+                <div class="color-square orange" data-color="#ff8000"></div>
+                <div class="color-square yellow-orange" data-color="#ffb000"></div>
+                <div class="color-square yellow" data-color="#ffff00"></div>
+                <div class="color-square lime" data-color="#80ff00"></div>
+                <div class="color-square light-green" data-color="#00ff80"></div>
+                <div class="color-square green" data-color="#008000"></div>
+                <div class="color-square cyan" data-color="#00ffff"></div>
+                <div class="color-square light-blue" data-color="#0080ff"></div>
+                <div class="color-square sky-blue" data-color="#87ceeb"></div>
+                <div class="color-square blue" data-color="#0000ff"></div>
+                <div class="color-square dark-blue" data-color="#000080"></div>
+                <div class="color-square navy" data-color="#1e1e3f"></div>
+                <div class="color-square purple" data-color="#800080"></div>
+                <div class="color-square magenta" data-color="#ff00ff"></div>
+                <div class="color-square pink" data-color="#ffb6c1"></div>
+                <div class="color-square light-pink" data-color="#ffc0cb"></div>
+                <div class="color-square gray" data-color="#808080"></div>
+                <div class="color-square dark-gray" data-color="#404040"></div>
+                <div class="color-square black" data-color="#000000"></div>
+                <div class="color-square white" data-color="#ffffff"></div>
+            </div>
+        </div>
+
+        <div class="canvas-area">
+            <div class="drawing-grid" id="drawingGrid"></div>
+        </div>
+    </div>
+
+    <script>
+        class ColoringGame {
+            constructor() {
+                this.selectedColor = '#ff0000'; // Default to red
+                this.isDrawing = false;
+                this.gridSize = 40; // 40x30 grid
+                this.gridHeight = 30;
+                
+                this.init();
+            }
+
+            init() {
+                this.createGrid();
+                this.setupEventListeners();
+                this.selectInitialColor();
+            }
+
+            createGrid() {
+                const grid = document.getElementById('drawingGrid');
+                grid.style.gridTemplateColumns = `repeat(${this.gridSize}, 1fr)`;
+                
+                // Create pixels
+                for (let i = 0; i < this.gridSize * this.gridHeight; i++) {
+                    const pixel = document.createElement('div');
+                    pixel.className = 'pixel';
+                    pixel.dataset.index = i;
+                    grid.appendChild(pixel);
+                }
+            }
+
+            setupEventListeners() {
+                // Color selection
+                const colorSquares = document.querySelectorAll('.color-square');
+                colorSquares.forEach(square => {
+                    square.addEventListener('click', (e) => {
+                        this.selectColor(e.target);
+                    });
+                });
+
+                // Drawing functionality
+                const pixels = document.querySelectorAll('.pixel');
+                pixels.forEach(pixel => {
+                    // Mouse down - start drawing
+                    pixel.addEventListener('mousedown', (e) => {
+                        e.preventDefault();
+                        this.isDrawing = true;
+                        this.colorPixel(pixel);
+                    });
+
+                    // Mouse over - continue drawing if mouse is down
+                    pixel.addEventListener('mouseover', (e) => {
+                        if (this.isDrawing) {
+                            this.colorPixel(pixel);
+                        }
+                    });
+                });
+
+                // Stop drawing when mouse is released anywhere
+                document.addEventListener('mouseup', () => {
+                    this.isDrawing = false;
+                });
+
+                // Clear button
+                document.getElementById('clearBtn').addEventListener('click', () => {
+                    this.clearCanvas();
+                });
+
+                // Prevent context menu on right click
+                document.addEventListener('contextmenu', (e) => {
+                    if (e.target.classList.contains('pixel')) {
+                        e.preventDefault();
+                    }
+                });
+            }
+
+            selectColor(colorSquare) {
+                // Remove selection from all colors
+                document.querySelectorAll('.color-square').forEach(square => {
+                    square.classList.remove('selected');
+                });
+
+                // Add selection to clicked color
+                colorSquare.classList.add('selected');
+                this.selectedColor = colorSquare.dataset.color;
+            }
+
+            selectInitialColor() {
+                // Select the first color (red) by default
+                const firstColor = document.querySelector('.color-square');
+                this.selectColor(firstColor);
+            }
+
+            colorPixel(pixel) {
+                pixel.style.backgroundColor = this.selectedColor;
+            }
+
+            clearCanvas() {
+                const pixels = document.querySelectorAll('.pixel');
+                pixels.forEach(pixel => {
+                    pixel.style.backgroundColor = 'white';
+                });
+            }
+        }
+
+        // Initialize the game when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new ColoringGame();
+        });
+    </script>
+</body>
+</html>
