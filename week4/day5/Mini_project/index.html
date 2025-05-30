@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robo-Friends Search</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            margin-bottom: 10px;
+            letter-spacing: 3px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 30px;
+        }
+
+        .search-container {
+            position: relative;
+            max-width: 500px;
+            margin: 0 auto 40px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 15px 20px 15px 50px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .search-box::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .search-box:focus {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.2rem;
+        }
+
+        .robots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 20px 0;
+        }
+
+        .robot-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .robot-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .robot-card:hover::before {
+            left: 100%;
+        }
+
+        .robot-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .robot-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+        
+        }
+
+        .robot-card:hover .robot-image {
+            transform: rotate(360deg) scale(1.1);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .robot-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .robot-username {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 8px;
+            font-weight: 400;
+        }
+
+        .robot-email {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            word-break: break-all;
+        }
+
+        .no-results {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.2rem;
+            margin-top: 50px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .results-count {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .robots-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .robot-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1> ROBO-FRIENDS</h1>
+            <p class="subtitle">Search and discover amazing robots</p>
+        </header>
+
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input 
+                type="text" 
+                class="search-box" 
+                id="searchInput"
+                placeholder="Search robots by name..."
+            >
+        </div>
+
+        <div class="results-count" id="resultsCount"></div>
+
+        <div class="robots-grid" id="robotsGrid">
+        </div>
+
+        <div class="no-results" id="noResults" style="display: none;">
+            <i class="fas fa-robot" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.5;"></i>
+            <p>No robots found matching your search.</p>
+        </div>
+    </div>
+
+    <script>
+        const robots = [
+            {
+                id: 1,
+                name: 'Leanne Graham',
+                username: 'Bret',
+                email: 'Sincere@april.biz',
+                image: 'https://robohash.org/1?200x200'
+            },
+            {
+                id: 2,
+                name: 'Ervin Howell',
+                username: 'Antonette',
+                email: 'Shanna@melissa.tv',
+                image: 'https://robohash.org/2?200x200'
+            },
+            {
+                id: 3,
+                name: 'Clementine Bauch',
+                username: 'Samantha',
+                email: 'Nathan@yesenia.net',
+                image: 'https://robohash.org/3?200x200'
+            },
+            {
+                id: 4,
+                name: 'Patricia Lebsack',
+                username: 'Karianne',
+                email: 'Julianne.OConner@kory.org',
+                image: 'https://robohash.org/4?200x200'
+            },
+            {
+                id: 5,
+                name: 'Chelsey Dietrich',
+                username: 'Kamren',
+                email: 'Lucio_Hettinger@annie.ca',
+                image: 'https://robohash.org/5?200x200'
+            },
+            {
+                id: 6,
+                name: 'Mrs. Dennis Schulist',
+                username: 'Leopoldo_Corkery',
+                email: 'Karley_Dach@jasper.info',
+                image: 'https://robohash.org/6?200x200'
+            },
+            {
+                id: 7,
+                name: 'Kurtis Weissnat',
+                username: 'Elwyn.Skiles',
+                email: 'Telly.Hoeger@billy.biz',
+                image: 'https://robohash.org/7?200x200'
+            },
+            {
+                id: 8,
+                name: 'Nicholas Runolfsdottir V',
+                username: 'Maxime_Nienow',
+                email: 'Sherwood@rosamond.me',
+                image: 'https://robohash.org/8?200x200'
+            },
+            {
+                id: 9,
+                name: 'Glenna Reichert',
+                username: 'Delphine',
+                email: 'Chaim_McDermott@dana.io',
+                image: 'https://robohash.org/9?200x200'
+            },
+            {
+                id: 10,
+                name: 'Clementina DuBuque',
+                username: 'Moriah.Stanton',
+                email: 'Rey.Padberg@karina.biz',
+                image: 'https://robohash.org/10?200x200'
+            }
+        ];
+
+        // DOM elements
+        const searchInput = document.getElementById('searchInput');
+        const robotsGrid = document.getElementById('robotsGrid');
+        const noResults = document.getElementById('noResults');
+        const resultsCount = document.getElementById('resultsCount');
+
+        // Function to create robot card
+        const createRobotCard = (robot) => {
+            const { id, name, username, email, image } = robot;
+            
+            return `
+                <div class="robot-card">
+                    <img src="${image}" alt="${name}" class="robot-image">
+                    <h3 class="robot-name">${name}</h3>
+                    <p class="robot-username">@${username}</p>
+                    <p class="robot-email">${email}</p>
+                </div>
+            `;
+        };
+
+        // Function to display robots
+        const displayRobots = (robotsToShow) => {
+            if (robotsToShow.length === 0) {
+                robotsGrid.style.display = 'none';
+                noResults.style.display = 'block';
+                resultsCount.textContent = '';
+            } else {
+                robotsGrid.style.display = 'grid';
+                noResults.style.display = 'none';
+                robotsGrid.innerHTML = robotsToShow.map(createRobotCard).join('');
+                resultsCount.textContent = `Showing ${robotsToShow.length} robot${robotsToShow.length !== 1 ? 's' : ''}`;
+            }
+        };
+
+        // Function to filter robots
+        const filterRobots = (searchTerm) => {
+            return robots.filter(robot => 
+                robot.name.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        };
+
+        // Search functionality
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.trim();
+            const filteredRobots = searchTerm === '' ? robots : filterRobots(searchTerm);
+            displayRobots(filteredRobots);
+        });
+
+        // Initial display
+        displayRobots(robots);
+    </script>
+</body>
+</html>
