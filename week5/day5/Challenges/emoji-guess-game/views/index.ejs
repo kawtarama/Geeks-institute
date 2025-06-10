@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Emoji Guess Game</title>
+</head>
+<body>
+  <h1>Guess the Emoji!</h1>
+  <h2>Score: <%= score %></h2>
+  <form action="/guess" method="POST">
+    <h3><%= question.emoji %></h3>
+    <% question.options.forEach(opt => { %>
+      <div>
+        <input type="radio" name="answer" value="<%= opt %>" required> <%= opt %>
+      </div>
+    <% }) %>
+    <button type="submit">Submit</button>
+  </form>
+</body>
+</html>
