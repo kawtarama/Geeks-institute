@@ -1,0 +1,2 @@
+Ceci est un fichier texte d'exemple pour le défi Node.js.
+Il contient plusieurs lignes pour tester la lecture de fichiers.
