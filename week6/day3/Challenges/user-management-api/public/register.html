@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<head>
+  <title>Register</title>
+  <script>
+    function validate() {
+      const fname = document.getElementById('fname').value;
+      const lname = document.getElementById('lname').value;
+      const email = document.getElementById('email').value;
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      document.getElementById('submit').disabled = !(fname && lname && email && username && password);
+    }
+  </script>
+</head>
+<body>
+  <h2>Register :</h2>
+  <form method="POST" action="/register">
+    First name <input type="text" name="fname" id="fname" onkeyup="validate()" /><br />
+    Last name <input type="text" name="lname" id="lname" onkeyup="validate()" /><br />
+    Email <input type="email" name="email" id="email" onkeyup="validate()" /><br />
+    Username <input type="text" name="username" id="username" onkeyup="validate()" /><br />
+    Password <input type="password" name="password" id="password" onkeyup="validate()" /><br />
+    <button type="submit" id="submit" disabled>Register</button>
+  </form>
+</body>
+</html>
